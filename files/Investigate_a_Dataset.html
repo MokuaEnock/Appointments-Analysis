@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Investigate a Dataset</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      word-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<section id="analysis-of-doctor-appointments" class="cell markdown">
+<h1>Analysis of Doctor Appointments</h1>
+<h2 id="table-of-contents">Table of Contents</h2>
+<ol>
+<li><a href="#intro">Introduction</a></li>
+<li><a href="#wrangling">Data Wrangling</a></li>
+<li><a href="#eda">Exploratory Data Analysis</a></li>
+<li><a href="#conclusions">Conclusions</a></li>
+</ol>
+</section>
+<div class="cell markdown">
+<p><a id='intro'></a></p>
+<h2 id="introduction">Introduction</h2>
+<p>A person makes a doctor appointment, receives all the instructions and no-show. Who to blame? <strong>Well Let's find Out</strong></p>
+<h3 id="dataset-description">Dataset Description</h3>
+<p>This dataset collects information from 100k medical appointments in Brazil and is focused on the question of whether or not patients show up for their appointment. A number of characteristics about the patient are included in each row.</p>
+<h4 id="data-dictionary">Data Dictionary</h4>
+<dl>
+<dt>PatientId</dt>
+<dd>Identification of the patient</dd>
+<dt>AppointmentID</dt>
+<dd>Identification of each appointment</dd>
+<dt>Gender</dt>
+<dd>Male of Female</dd>
+
+<dt>Age</dt>
+<dd>The Age of the patient</dd>
+
+<dt>Naighborhood</dt>
+<dd>Where the appointment takes place</dd>
+
+<dt>Scholarship</dt>
+<dd>Indicates whether or not the patient is enrolled in the Brasilian welfare program</dd>
+
+<dt>Schedule Day</dt>
+<dd>When the appointment was scheduled</dd>
+
+<dt>Hipertension</dt>
+<dd>True or false :if patient is suffering from hypertension</dd>
+
+<dt>Diabetes</dt>
+<dd>True or False :if patient is suffering from diabetes</dd>
+
+<dt>Alcoholisim</dt>
+<dd>True or False :if patient is and alcoholic or not</dd>
+
+<dt>Handcap</dt>
+<dd>True of False : if patient is handicapped or not</dd>
+
+<dt>SMS_received</dt>
+<dd>Number of messages sent to patient</dd>
+
+<dt>No_show</dt>
+<dd>True or False: if patient showed up to the appointment</dd>
+
+</dl>
+<h3 id="questions-for-analysis">Questions for Analysis</h3>
+<ol>
+<li><p>Is Alcholism likely to affect if a patient will show up for an appointment?</p></li>
+<li><p>Between diabetes and hipertension patients which patients are likely to miss an appointment?</p></li>
+</ol>
+</div>
+<div class="cell code" data-execution_count="106" data-collapsed="true">
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># importing the modules for use</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sb</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> datetime</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">&#39;ignore&#39;</span>)</span></code></pre></div>
+</div>
+<div class="cell markdown">
+<p><a id='wrangling'></a></p>
+<h2 id="data-wrangling">Data Wrangling</h2>
+<h3 id="general-properties">General Properties</h3>
+</div>
+<div class="cell markdown">
+<p>We will begin our dataset exploration by importing our data and previewing the top of the dataset.</p>
+</div>
+<div class="cell code" data-execution_count="107" data-collapsed="true">
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">&quot;noshowappointments-kagglev2-may-2016.csv&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>df.head(<span class="dv">10</span>)</span></code></pre></div>
+<div class="output execute_result" data-execution_count="107">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PatientId</th>
+      <th>AppointmentID</th>
+      <th>Gender</th>
+      <th>ScheduledDay</th>
+      <th>AppointmentDay</th>
+      <th>Age</th>
+      <th>Neighbourhood</th>
+      <th>Scholarship</th>
+      <th>Hipertension</th>
+      <th>Diabetes</th>
+      <th>Alcoholism</th>
+      <th>Handcap</th>
+      <th>SMS_received</th>
+      <th>No-show</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2.987250e+13</td>
+      <td>5642903</td>
+      <td>F</td>
+      <td>2016-04-29T18:38:08Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>62</td>
+      <td>JARDIM DA PENHA</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>5.589978e+14</td>
+      <td>5642503</td>
+      <td>M</td>
+      <td>2016-04-29T16:08:27Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>56</td>
+      <td>JARDIM DA PENHA</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4.262962e+12</td>
+      <td>5642549</td>
+      <td>F</td>
+      <td>2016-04-29T16:19:04Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>62</td>
+      <td>MATA DA PRAIA</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>8.679512e+11</td>
+      <td>5642828</td>
+      <td>F</td>
+      <td>2016-04-29T17:29:31Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>8</td>
+      <td>PONTAL DE CAMBURI</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>8.841186e+12</td>
+      <td>5642494</td>
+      <td>F</td>
+      <td>2016-04-29T16:07:23Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>56</td>
+      <td>JARDIM DA PENHA</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>9.598513e+13</td>
+      <td>5626772</td>
+      <td>F</td>
+      <td>2016-04-27T08:36:51Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>76</td>
+      <td>REPÚBLICA</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>7.336882e+14</td>
+      <td>5630279</td>
+      <td>F</td>
+      <td>2016-04-27T15:05:12Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>23</td>
+      <td>GOIABEIRAS</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>3.449833e+12</td>
+      <td>5630575</td>
+      <td>F</td>
+      <td>2016-04-27T15:39:58Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>39</td>
+      <td>GOIABEIRAS</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>5.639473e+13</td>
+      <td>5638447</td>
+      <td>F</td>
+      <td>2016-04-29T08:02:16Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>21</td>
+      <td>ANDORINHAS</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>7.812456e+13</td>
+      <td>5629123</td>
+      <td>F</td>
+      <td>2016-04-27T12:48:25Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>19</td>
+      <td>CONQUISTA</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell markdown">
+<p>We will then check the number of columns and number of rows that are present in our data.</p>
+</div>
+<div class="cell code" data-execution_count="108">
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df.shape</span></code></pre></div>
+<div class="output execute_result" data-execution_count="108">
+<pre><code>(110527, 14)</code></pre>
+</div>
+</div>
+<div class="cell markdown">
+<p>We see that our data has 14 columns and 110,527 rows of data. We will then check on the names of our columns.</p>
+</div>
+<div class="cell code" data-execution_count="109">
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df.columns</span></code></pre></div>
+<div class="output execute_result" data-execution_count="109">
+<pre><code>Index([&#39;PatientId&#39;, &#39;AppointmentID&#39;, &#39;Gender&#39;, &#39;ScheduledDay&#39;,
+       &#39;AppointmentDay&#39;, &#39;Age&#39;, &#39;Neighbourhood&#39;, &#39;Scholarship&#39;, &#39;Hipertension&#39;,
+       &#39;Diabetes&#39;, &#39;Alcoholism&#39;, &#39;Handcap&#39;, &#39;SMS_received&#39;, &#39;No-show&#39;],
+      dtype=&#39;object&#39;)</code></pre>
+</div>
+</div>
+<div class="cell markdown">
+<p>Having generated the dataset columns we will then check on the data types of the columns.</p>
+</div>
+<div class="cell code" data-execution_count="110">
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df.dtypes</span></code></pre></div>
+<div class="output execute_result" data-execution_count="110">
+<pre><code>PatientId         float64
+AppointmentID       int64
+Gender             object
+ScheduledDay       object
+AppointmentDay     object
+Age                 int64
+Neighbourhood      object
+Scholarship         int64
+Hipertension        int64
+Diabetes            int64
+Alcoholism          int64
+Handcap             int64
+SMS_received        int64
+No-show            object
+dtype: object</code></pre>
+</div>
+</div>
+<div class="cell markdown">
+<p>Our dataset has columns of different datatyeps namely float, integers, and string (we will assign the appropriate data types of these columns later) we will then generate the general information of the dataset.</p>
+</div>
+<div class="cell code" data-execution_count="111">
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df.info()</span></code></pre></div>
+<div class="output stream stdout">
+<pre><code>&lt;class &#39;pandas.core.frame.DataFrame&#39;&gt;
+RangeIndex: 110527 entries, 0 to 110526
+Data columns (total 14 columns):
+ #   Column          Non-Null Count   Dtype  
+---  ------          --------------   -----  
+ 0   PatientId       110527 non-null  float64
+ 1   AppointmentID   110527 non-null  int64  
+ 2   Gender          110527 non-null  object 
+ 3   ScheduledDay    110527 non-null  object 
+ 4   AppointmentDay  110527 non-null  object 
+ 5   Age             110527 non-null  int64  
+ 6   Neighbourhood   110527 non-null  object 
+ 7   Scholarship     110527 non-null  int64  
+ 8   Hipertension    110527 non-null  int64  
+ 9   Diabetes        110527 non-null  int64  
+ 10  Alcoholism      110527 non-null  int64  
+ 11  Handcap         110527 non-null  int64  
+ 12  SMS_received    110527 non-null  int64  
+ 13  No-show         110527 non-null  object 
+dtypes: float64(1), int64(8), object(5)
+memory usage: 11.8+ MB
+</code></pre>
+</div>
+</div>
+<section id="data-cleaning" class="cell markdown">
+<h3>Data Cleaning</h3>
+</section>
+<div class="cell markdown">
+<p>Our first step towards effective data cleaning is ensuring that we have no missing values in our data and if there is any ensuring that they are dealed with appropriately.</p>
+<p>We will check on missing values in the data.</p>
+</div>
+<div class="cell code" data-execution_count="112">
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df.isna().<span class="bu">any</span>() <span class="op">==</span> <span class="va">True</span></span></code></pre></div>
+<div class="output execute_result" data-execution_count="112">
+<pre><code>PatientId         False
+AppointmentID     False
+Gender            False
+ScheduledDay      False
+AppointmentDay    False
+Age               False
+Neighbourhood     False
+Scholarship       False
+Hipertension      False
+Diabetes          False
+Alcoholism        False
+Handcap           False
+SMS_received      False
+No-show           False
+dtype: bool</code></pre>
+</div>
+</div>
+<div class="cell markdown">
+<p>None of teh columns has any missing, hence we will move on to the next step in data cleaning that is ensuring every column has the appropriate data type. We will first begin by checking on the data types of the column.</p>
+</div>
+<div class="cell code" data-execution_count="113">
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">&quot;&quot;&quot; checking on the data types of the columns &quot;&quot;&quot;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>df.dtypes</span></code></pre></div>
+<div class="output execute_result" data-execution_count="113">
+<pre><code>PatientId         float64
+AppointmentID       int64
+Gender             object
+ScheduledDay       object
+AppointmentDay     object
+Age                 int64
+Neighbourhood      object
+Scholarship         int64
+Hipertension        int64
+Diabetes            int64
+Alcoholism          int64
+Handcap             int64
+SMS_received        int64
+No-show            object
+dtype: object</code></pre>
+</div>
+</div>
+<div class="cell markdown">
+<p>From the cell output above we see that the <strong>AppointmentDay</strong> and <strong>ScheduleDay</strong> are of data type object meaning that they are strings, why is this?</p>
+<p>Lets visualize the dataset once again?</p>
+</div>
+<div class="cell code" data-execution_count="114">
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df.head(<span class="dv">10</span>)</span></code></pre></div>
+<div class="output execute_result" data-execution_count="114">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>PatientId</th>
+      <th>AppointmentID</th>
+      <th>Gender</th>
+      <th>ScheduledDay</th>
+      <th>AppointmentDay</th>
+      <th>Age</th>
+      <th>Neighbourhood</th>
+      <th>Scholarship</th>
+      <th>Hipertension</th>
+      <th>Diabetes</th>
+      <th>Alcoholism</th>
+      <th>Handcap</th>
+      <th>SMS_received</th>
+      <th>No-show</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2.987250e+13</td>
+      <td>5642903</td>
+      <td>F</td>
+      <td>2016-04-29T18:38:08Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>62</td>
+      <td>JARDIM DA PENHA</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>5.589978e+14</td>
+      <td>5642503</td>
+      <td>M</td>
+      <td>2016-04-29T16:08:27Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>56</td>
+      <td>JARDIM DA PENHA</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>4.262962e+12</td>
+      <td>5642549</td>
+      <td>F</td>
+      <td>2016-04-29T16:19:04Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>62</td>
+      <td>MATA DA PRAIA</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>8.679512e+11</td>
+      <td>5642828</td>
+      <td>F</td>
+      <td>2016-04-29T17:29:31Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>8</td>
+      <td>PONTAL DE CAMBURI</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>8.841186e+12</td>
+      <td>5642494</td>
+      <td>F</td>
+      <td>2016-04-29T16:07:23Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>56</td>
+      <td>JARDIM DA PENHA</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>9.598513e+13</td>
+      <td>5626772</td>
+      <td>F</td>
+      <td>2016-04-27T08:36:51Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>76</td>
+      <td>REPÚBLICA</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>7.336882e+14</td>
+      <td>5630279</td>
+      <td>F</td>
+      <td>2016-04-27T15:05:12Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>23</td>
+      <td>GOIABEIRAS</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>3.449833e+12</td>
+      <td>5630575</td>
+      <td>F</td>
+      <td>2016-04-27T15:39:58Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>39</td>
+      <td>GOIABEIRAS</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>Yes</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>5.639473e+13</td>
+      <td>5638447</td>
+      <td>F</td>
+      <td>2016-04-29T08:02:16Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>21</td>
+      <td>ANDORINHAS</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>7.812456e+13</td>
+      <td>5629123</td>
+      <td>F</td>
+      <td>2016-04-27T12:48:25Z</td>
+      <td>2016-04-29T00:00:00Z</td>
+      <td>19</td>
+      <td>CONQUISTA</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell markdown">
+<p>From the output above we see that reason is because they contain <strong>T</strong> and <strong>Z</strong> lets clean this up.</p>
+<blockquote>
+<p>We will begin by cleaning up the Schedule we will split this column on delimeter <strong>T</strong> and renaming the new columns</p>
+</blockquote>
+</div>
+<div class="cell code" data-execution_count="115">
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>schedule <span class="op">=</span> df[<span class="st">&#39;ScheduledDay&#39;</span>].<span class="bu">str</span>.split(<span class="st">&quot;T&quot;</span>, expand<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>schedule.columns <span class="op">=</span> [<span class="st">&quot;Schedule_date&quot;</span>, <span class="st">&quot;Schedule_Time&quot;</span>]</span></code></pre></div>
+</div>
+<div class="cell markdown">
+<p>Having split the data based on the delimeter <strong>T</strong> we will remove the <strong>Z</strong> by splitting it from the rest of the data, we will then add the two columns together to produce a single colum containing the date and time that is clean.</p>
+</div>
+<div class="cell code" data-execution_count="116">
+<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>schedule_day <span class="op">=</span> schedule[<span class="st">&quot;Schedule_Time&quot;</span>].<span class="bu">str</span>.split(<span class="st">&quot;Z&quot;</span>, expand<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>schedule_day.columns <span class="op">=</span> [<span class="st">&quot;Schedule_Time&quot;</span>, <span class="st">&quot;drop&quot;</span>]</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>schd <span class="op">=</span> pd.concat([schedule_day[<span class="st">&quot;Schedule_Time&quot;</span>], schedule[<span class="st">&#39;Schedule_date&#39;</span>]], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>schd1 <span class="op">=</span> pd.DataFrame(schd[<span class="st">&#39;Schedule_date&#39;</span>] <span class="op">+</span> <span class="st">&quot; &quot;</span> <span class="op">+</span>schd[<span class="st">&#39;Schedule_Time&#39;</span>])</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>schd1.columns <span class="op">=</span> [<span class="st">&#39;schedule&#39;</span>]</span></code></pre></div>
+</div>
+<div class="cell markdown">
+<p>We will then move onto the <strong>AppointmentDate</strong> here we willl split the data based on the <strong>T</strong> and <strong>Z</strong> delimeter.</p>
+<p>it will produce two columns one with date and teh other with time, hwoever we will notice that the time column is 0 hence we drop the column to remain with date only.</p>
+</div>
+<div class="cell code" data-execution_count="117">
+<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">#appointment date column</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>appoint <span class="op">=</span> df[<span class="st">&#39;AppointmentDay&#39;</span>].<span class="bu">str</span>.split(<span class="st">&quot;T&quot;</span>, expand<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>appoint.columns <span class="op">=</span> [<span class="st">&quot;appoint_date&quot;</span>, <span class="st">&quot;appoint_Time&quot;</span>]</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>app <span class="op">=</span> appoint.drop(labels<span class="op">=</span>[<span class="st">&quot;appoint_Time&quot;</span>], axis <span class="op">=</span> <span class="dv">1</span>)</span></code></pre></div>
+</div>
+<div class="cell markdown">
+<p>We will then convert the concat the schedule and appointment columns and convert them to datetime</p>
+</div>
+<div class="cell code" data-execution_count="118">
+<div class="sourceCode" id="cb19"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>schd1[<span class="st">&#39;schedule&#39;</span>] <span class="op">=</span> pd.to_datetime(schd1[<span class="st">&#39;schedule&#39;</span>])</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>time_d <span class="op">=</span> pd.concat([schd1, app], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>time_d[<span class="st">&#39;appoint_date&#39;</span>] <span class="op">=</span> pd.to_datetime(time_d[<span class="st">&quot;appoint_date&quot;</span>])</span></code></pre></div>
+</div>
+<div class="cell markdown">
+<p>It is important to note that the <strong>AppointmetId</strong> and <strong>PatientId</strong> are unique identifiers of the <strong>AppointmentDay</strong> and <strong>ScheduleDay</strong> from our dataset since we will be replacing them with teh cleaned version.</p>
+</div>
+<div class="cell code" data-execution_count="119">
+<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df1 <span class="op">=</span> df.drop(columns <span class="op">=</span> [<span class="st">&#39;AppointmentDay&#39;</span>, <span class="st">&#39;ScheduledDay&#39;</span>, <span class="st">&#39;PatientId&#39;</span>, <span class="st">&#39;AppointmentID&#39;</span>])</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>df_comp <span class="op">=</span> pd.concat([time_d, df1], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="co">#preview the dataset</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>df_comp.head(<span class="dv">5</span>)</span></code></pre></div>
+<div class="output execute_result" data-execution_count="119">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>schedule</th>
+      <th>appoint_date</th>
+      <th>Gender</th>
+      <th>Age</th>
+      <th>Neighbourhood</th>
+      <th>Scholarship</th>
+      <th>Hipertension</th>
+      <th>Diabetes</th>
+      <th>Alcoholism</th>
+      <th>Handcap</th>
+      <th>SMS_received</th>
+      <th>No-show</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2016-04-29 18:38:08</td>
+      <td>2016-04-29</td>
+      <td>F</td>
+      <td>62</td>
+      <td>JARDIM DA PENHA</td>
+      <td>0</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2016-04-29 16:08:27</td>
+      <td>2016-04-29</td>
+      <td>M</td>
+      <td>56</td>
+      <td>JARDIM DA PENHA</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2016-04-29 16:19:04</td>
+      <td>2016-04-29</td>
+      <td>F</td>
+      <td>62</td>
+      <td>MATA DA PRAIA</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2016-04-29 17:29:31</td>
+      <td>2016-04-29</td>
+      <td>F</td>
+      <td>8</td>
+      <td>PONTAL DE CAMBURI</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2016-04-29 16:07:23</td>
+      <td>2016-04-29</td>
+      <td>F</td>
+      <td>56</td>
+      <td>JARDIM DA PENHA</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell markdown">
+<p>From our dataset we have seen that some of the columns are of boolean type for the sake of viualizing we will convert the data type to string by assigning <strong>Yes</strong> or <strong>No</strong>.</p>
+</div>
+<div class="cell code" data-execution_count="120">
+<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df_comp1 <span class="op">=</span> df_comp.replace(<span class="dv">0</span>, <span class="st">&quot;No&quot;</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>df_comp2 <span class="op">=</span> df_comp1.replace(<span class="dv">1</span>, <span class="st">&quot;Yes&quot;</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>df_comp2.head()</span></code></pre></div>
+<div class="output execute_result" data-execution_count="120">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>schedule</th>
+      <th>appoint_date</th>
+      <th>Gender</th>
+      <th>Age</th>
+      <th>Neighbourhood</th>
+      <th>Scholarship</th>
+      <th>Hipertension</th>
+      <th>Diabetes</th>
+      <th>Alcoholism</th>
+      <th>Handcap</th>
+      <th>SMS_received</th>
+      <th>No-show</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2016-04-29 18:38:08</td>
+      <td>2016-04-29</td>
+      <td>F</td>
+      <td>62</td>
+      <td>JARDIM DA PENHA</td>
+      <td>No</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2016-04-29 16:08:27</td>
+      <td>2016-04-29</td>
+      <td>M</td>
+      <td>56</td>
+      <td>JARDIM DA PENHA</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2016-04-29 16:19:04</td>
+      <td>2016-04-29</td>
+      <td>F</td>
+      <td>62</td>
+      <td>MATA DA PRAIA</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2016-04-29 17:29:31</td>
+      <td>2016-04-29</td>
+      <td>F</td>
+      <td>8</td>
+      <td>PONTAL DE CAMBURI</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2016-04-29 16:07:23</td>
+      <td>2016-04-29</td>
+      <td>F</td>
+      <td>56</td>
+      <td>JARDIM DA PENHA</td>
+      <td>No</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell markdown">
+<p><a id='eda'></a></p>
+<h2 id="exploratory-data-analysis">Exploratory Data Analysis</h2>
+</div>
+<div class="cell code" data-execution_count="121">
+<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co">&quot;&quot;&quot; setting the defaults for our visuals &quot;&quot;&quot;</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> [<span class="st">&#39;#C39BD3&#39;</span>,  <span class="st">&#39;#7FB3D5&#39;</span>,<span class="st">&#39;#F0B27A&#39;</span>, <span class="st">&#39;#ABEBC6&#39;</span>, <span class="st">&#39;#73C6B6&#39;</span>, <span class="st">&#39;#F4D03F&#39;</span>]</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>plt.rcParams.update({<span class="st">&#39;font.family&#39;</span>:<span class="st">&#39;Times New Roman&#39;</span>})</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>plt.rcParams.update({<span class="st">&#39;font.size&#39;</span>:<span class="dv">16</span>})</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">&#39;figure.figsize&#39;</span>] <span class="op">=</span> [<span class="dv">10</span>, <span class="dv">5</span>]</span></code></pre></div>
+</div>
+<div class="cell code" data-execution_count="122">
+<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">&quot;&quot;&quot; creating a function to add labels to our plots &quot;&quot;&quot;</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> addlabels(x, y):</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(x)):</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>        plt.text(i, y[i], y[i],ha <span class="op">=</span> <span class="st">&quot;center&quot;</span>)</span></code></pre></div>
+</div>
+<section id="1-is-alcholism-likely-to-affect-if-a-user-will-keep-an-appointemnt" class="cell markdown">
+<h3>1. Is alcholism likely to affect if a user will keep an appointemnt?</h3>
+</section>
+<div class="cell markdown" data-collapsed="true">
+<p>We will begin by analyzing the number of individuals who consume alcohol.</p>
+</div>
+<div class="cell code" data-execution_count="123">
+<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> turtle <span class="im">import</span> color</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>alcohol_x <span class="op">=</span> df_comp2[<span class="st">&quot;Alcoholism&quot;</span>].unique()</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>alcohol_y <span class="op">=</span> df_comp2[<span class="st">&quot;Alcoholism&quot;</span>].value_counts()</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>plt.bar(alcohol_x, alcohol_y, color <span class="op">=</span> colors)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>addlabels(alcohol_x, alcohol_y)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&#39;Number of patients.&#39;</span>, fontsize <span class="op">=</span> <span class="dv">18</span>, fontweight <span class="op">=</span> <span class="st">&quot;bold&quot;</span>, color <span class="op">=</span> <span class="st">&quot;teal&quot;</span>)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&quot;Count&quot;</span>, fontsize <span class="op">=</span> <span class="dv">18</span>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;Alcoholic?&quot;</span>, fontsize<span class="op">=</span> <span class="dv">18</span>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<div class="output stream stderr">
+<pre><code>findfont: Font family [&#39;Times New Roman&#39;] not found. Falling back to DejaVu Sans.
+</code></pre>
+</div>
+<div class="output display_data">
+<p><img src="vertopal_6defd52f5751422581c88426ad059ec0/4c07d7e91ed4b47323f9d3bbc288054de45cb585.png" /></p>
+</div>
+</div>
+<div class="cell markdown">
+<p>We will then group this alcohol consumers and non-alcohol consumers.</p>
+</div>
+<div class="cell code" data-execution_count="124">
+<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>alcohol_g <span class="op">=</span> df_comp2.groupby(by<span class="op">=</span>df_comp2[<span class="st">&#39;Alcoholism&#39;</span>])</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>yes_alcohol <span class="op">=</span> alcohol_g.get_group(<span class="st">&#39;Yes&#39;</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>no_alcohol <span class="op">=</span> alcohol_g.get_group(<span class="st">&#39;No&#39;</span>)</span></code></pre></div>
+</div>
+<div class="cell markdown">
+<p>We have created two groups for our patients based on if they consume alcohol we will analysze these groups separately. Lets craete a pie chart to see how many respondents consume alcohol.</p>
+</div>
+<div class="cell code" data-execution_count="126">
+<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>yes_alcohol[<span class="st">&#39;No-show&#39;</span>].value_counts().plot(kind <span class="op">=</span> <span class="st">&quot;pie&quot;</span>, startangle<span class="op">=</span><span class="dv">144</span>, colors <span class="op">=</span> colors, explode<span class="op">=</span>(<span class="fl">0.07</span>, <span class="dv">0</span>), autopct <span class="op">=</span> <span class="st">&#39;</span><span class="sc">%1.1f%%</span><span class="st">&#39;</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&#39;Alcohol consumers who showed up to the appointment.&#39;</span>, fontsize <span class="op">=</span> <span class="dv">20</span>, fontweight <span class="op">=</span> <span class="st">&#39;bold&#39;</span>, color <span class="op">=</span> <span class="st">&#39;teal&#39;</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">&#39;off&#39;</span>)</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="va">None</span>)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="va">None</span>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<div class="output display_data">
+<p><img src="vertopal_6defd52f5751422581c88426ad059ec0/7166ef615753e3bfc06106ee543babda2dc79ae6.png" /></p>
+</div>
+</div>
+<div class="cell markdown">
+<p>lets explore non-alcohol consumers</p>
+</div>
+<div class="cell code" data-execution_count="156">
+<div class="sourceCode" id="cb28"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>no_alcohol[<span class="st">&#39;No-show&#39;</span>].value_counts().plot(kind <span class="op">=</span> <span class="st">&quot;pie&quot;</span>, startangle<span class="op">=</span><span class="dv">144</span>, colors <span class="op">=</span> colors, explode<span class="op">=</span>(<span class="fl">0.07</span>, <span class="dv">0</span>), autopct <span class="op">=</span> <span class="st">&#39;</span><span class="sc">%1.1f%%</span><span class="st">&#39;</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&#39;Alcohol consumers who never showed up to the appointment.&#39;</span>, fontsize <span class="op">=</span> <span class="dv">20</span>, fontweight <span class="op">=</span> <span class="st">&#39;bold&#39;</span>, color <span class="op">=</span> <span class="st">&#39;teal&#39;</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>plt.axis(<span class="st">&#39;off&#39;</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="va">None</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="va">None</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<div class="output display_data">
+<p><img src="vertopal_6defd52f5751422581c88426ad059ec0/26665ce9fa0a54107c5e90c32ea5103359878bcc.png" /></p>
+</div>
+</div>
+<section id="2-between-diabetes-and-hipertension-patients-which-patients-are-likely-to-miss-an-appointment" class="cell markdown">
+<h3>2. Between diabetes and hipertension patients which patients are likely to miss an appointment?</h3>
+</section>
+<div class="cell code" data-execution_count="128">
+<div class="sourceCode" id="cb29"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df_comp2.head()</span></code></pre></div>
+<div class="output execute_result" data-execution_count="128">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>schedule</th>
+      <th>appoint_date</th>
+      <th>Gender</th>
+      <th>Age</th>
+      <th>Neighbourhood</th>
+      <th>Scholarship</th>
+      <th>Hipertension</th>
+      <th>Diabetes</th>
+      <th>Alcoholism</th>
+      <th>Handcap</th>
+      <th>SMS_received</th>
+      <th>No-show</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2016-04-29 18:38:08</td>
+      <td>2016-04-29</td>
+      <td>F</td>
+      <td>62</td>
+      <td>JARDIM DA PENHA</td>
+      <td>No</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2016-04-29 16:08:27</td>
+      <td>2016-04-29</td>
+      <td>M</td>
+      <td>56</td>
+      <td>JARDIM DA PENHA</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2016-04-29 16:19:04</td>
+      <td>2016-04-29</td>
+      <td>F</td>
+      <td>62</td>
+      <td>MATA DA PRAIA</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2016-04-29 17:29:31</td>
+      <td>2016-04-29</td>
+      <td>F</td>
+      <td>8</td>
+      <td>PONTAL DE CAMBURI</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2016-04-29 16:07:23</td>
+      <td>2016-04-29</td>
+      <td>F</td>
+      <td>56</td>
+      <td>JARDIM DA PENHA</td>
+      <td>No</td>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+      <td>No</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell markdown">
+<p>We will begin by grouping patients that are suffering from hypertension and diabetes into two separate groups.</p>
+</div>
+<div class="cell code" data-execution_count="129">
+<div class="sourceCode" id="cb30"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>df_dis <span class="op">=</span> df_comp2.groupby(by <span class="op">=</span> [<span class="st">&#39;Hipertension&#39;</span>])</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>hyper <span class="op">=</span> df_dis.get_group(<span class="st">&#39;Yes&#39;</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(hyper)</span></code></pre></div>
+<div class="output execute_result" data-execution_count="129">
+<pre><code>21801</code></pre>
+</div>
+</div>
+<div class="cell markdown">
+<p>From our analysis <strong>21801</strong> patients suffer from hipertension. Lets see how many of these patients kept their appointments.</p>
+</div>
+<div class="cell code" data-execution_count="148">
+<div class="sourceCode" id="cb32"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>group_size <span class="op">=</span> hyper[<span class="st">&quot;No-show&quot;</span>].value_counts()</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>group_size_df <span class="op">=</span> pd.DataFrame(group_size)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>group_size_df.head()</span></code></pre></div>
+<div class="output execute_result" data-execution_count="148">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>No-show</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>No</th>
+      <td>18029</td>
+    </tr>
+    <tr>
+      <th>Yes</th>
+      <td>3772</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell markdown">
+<p>From the table above we see the number of patients who never showed up to the appointment lets visualize this.</p>
+</div>
+<div class="cell code" data-execution_count="144">
+<div class="sourceCode" id="cb33"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#creating labels and group size</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>group_size <span class="op">=</span> hyper[<span class="st">&quot;No-show&quot;</span>].value_counts()</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>group_name <span class="op">=</span> hyper[<span class="st">&quot;No-show&quot;</span>].unique()</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co">#donut chart</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>circle <span class="op">=</span> plt.Circle((<span class="dv">0</span>,<span class="dv">0</span>), <span class="fl">0.7</span>, color <span class="op">=</span> <span class="st">&quot;white&quot;</span>)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>plt.pie(group_size, labels<span class="op">=</span>group_name, colors<span class="op">=</span>colors, wedgeprops <span class="op">=</span> { <span class="st">&#39;linewidth&#39;</span> : <span class="dv">6</span>, <span class="st">&#39;edgecolor&#39;</span> : <span class="st">&#39;white&#39;</span> })</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> plt.gcf()</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>p.gca().add_artist(circle)</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="co">#bar plot</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="co">#creating percentage for bars</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a>group_percent <span class="op">=</span> []</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> group_size:</span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>    group_percent.append(((i<span class="op">/</span>group_size.<span class="bu">sum</span>())<span class="op">*</span><span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">2</span>))</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a>group_percent</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>plt.bar(group_name, group_percent, color <span class="op">=</span> colors)</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a>addlabels(group_percent, group_percent)</span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&#39;Never showed up.&#39;</span>, fontsize <span class="op">=</span> <span class="dv">18</span>, fontweight <span class="op">=</span> <span class="st">&quot;bold&quot;</span>, color <span class="op">=</span> <span class="st">&quot;teal&quot;</span>)</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&quot;Percentage of patients&quot;</span>, fontsize <span class="op">=</span> <span class="dv">18</span>)</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;Alcoholic?&quot;</span>, fontsize<span class="op">=</span> <span class="dv">18</span>)</span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<div class="output display_data">
+<p><img src="vertopal_6defd52f5751422581c88426ad059ec0/b8bc0133c283e38d16f3e725aa3d505403cee32b.png" /></p>
+</div>
+<div class="output display_data">
+<p><img src="vertopal_6defd52f5751422581c88426ad059ec0/fa58d734a74347ff0aa8d88bd4b0c02f1c3cde03.png" /></p>
+</div>
+</div>
+<div class="cell markdown">
+<p>From the above graph we see that <strong>17.3%</strong> of patinets suffering from hipertension never showed up to the appointment. Lets find the number of patinets suffering from diabetes.</p>
+</div>
+<div class="cell code" data-execution_count="151">
+<div class="sourceCode" id="cb34"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>df_dis <span class="op">=</span> df_comp2.groupby(by <span class="op">=</span> [<span class="st">&#39;Diabetes&#39;</span>])</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>diab <span class="op">=</span> df_dis.get_group(<span class="st">&#39;Yes&#39;</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="bu">len</span>(diab)</span></code></pre></div>
+<div class="output execute_result" data-execution_count="151">
+<pre><code>7943</code></pre>
+</div>
+</div>
+<div class="cell markdown">
+<p>Lets find how many of these diabetic patients kept their appointments.</p>
+</div>
+<div class="cell code" data-execution_count="152">
+<div class="sourceCode" id="cb36"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>dgroup_size <span class="op">=</span> diab[<span class="st">&quot;No-show&quot;</span>].value_counts()</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>dgroup_size_df <span class="op">=</span> pd.DataFrame(dgroup_size)</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>dgroup_size_df.head()</span></code></pre></div>
+<div class="output execute_result" data-execution_count="152">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>No-show</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>No</th>
+      <td>6513</td>
+    </tr>
+    <tr>
+      <th>Yes</th>
+      <td>1430</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell markdown">
+<p>Let's visualize these results.</p>
+</div>
+<div class="cell code" data-execution_count="155">
+<div class="sourceCode" id="cb37"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">#creating labels and group size</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>group_size <span class="op">=</span> diab[<span class="st">&quot;No-show&quot;</span>].value_counts()</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>group_name <span class="op">=</span> diab[<span class="st">&quot;No-show&quot;</span>].unique()</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="co">#donut chart</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>circle <span class="op">=</span> plt.Circle((<span class="dv">0</span>,<span class="dv">0</span>), <span class="fl">0.7</span>, color <span class="op">=</span> <span class="st">&quot;white&quot;</span>)</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>plt.pie(group_size, labels<span class="op">=</span>group_name, colors<span class="op">=</span>colors, wedgeprops <span class="op">=</span> { <span class="st">&#39;linewidth&#39;</span> : <span class="dv">6</span>, <span class="st">&#39;edgecolor&#39;</span> : <span class="st">&#39;white&#39;</span> })</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> plt.gcf()</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>p.gca().add_artist(circle)</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a><span class="co">#bar plot</span></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="co">#creating percentage for bars</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>group_percent <span class="op">=</span> []</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> group_size:</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>    group_percent.append(((i<span class="op">/</span>group_size.<span class="bu">sum</span>())<span class="op">*</span><span class="dv">100</span>).<span class="bu">round</span>(<span class="dv">2</span>))</span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>group_percent</span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>plt.bar(group_name, group_percent, color <span class="op">=</span> colors)</span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>addlabels(group_percent, group_percent)</span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&#39;Never showed up.&#39;</span>, fontsize <span class="op">=</span> <span class="dv">18</span>, fontweight <span class="op">=</span> <span class="st">&quot;bold&quot;</span>, color <span class="op">=</span> <span class="st">&quot;teal&quot;</span>)</span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&quot;Percentage of patients&quot;</span>, fontsize <span class="op">=</span> <span class="dv">18</span>)</span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&quot;Alcoholic?&quot;</span>, fontsize<span class="op">=</span> <span class="dv">18</span>)</span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div>
+<div class="output display_data">
+<p><img src="vertopal_6defd52f5751422581c88426ad059ec0/7a12c69bc88a2ae20224d7a872f2a9f2249cfd43.png" /></p>
+</div>
+<div class="output display_data">
+<p><img src="vertopal_6defd52f5751422581c88426ad059ec0/deb8f7cd3f217020e239a0b692f7b88bd87a5868.png" /></p>
+</div>
+</div>
+<div class="cell markdown">
+<p><a id='conclusions'></a></p>
+<h2 id="conclusions">Conclusions</h2>
+<h4 id="findings">Findings</h4>
+<ol>
+<li><p>From the visualizations above 2 out of 10 patients who are alcohol consumers never showed up for the appointment.</p></li>
+<li><p>The number of patients suffering from hypertension was more than those suffering from diabetes</p></li>
+<li><p>From our visualizatiions and analysis above a patient suffering from diabetes is likely to miss an appointment than a patient suffering from hypertension.</p></li>
+</ol>
+<h4 id="limitations">Limitations</h4>
+<p>One of the limitations that i faced is an imbalanced dataset, the target variable has more patients keeping appointments that those not keeping the appointments. The presence of more individuals missing out on appointments could have pointed to the actual resons why an individual might miss out on an appointment.</p>
+</div>
+<section id="references" class="cell markdown">
+<h2>References</h2>
+<ol>
+<li><p><a href="https://www.python-graph-gallery.com/">Python Graph Gallery</a></p></li>
+<li><p><a href="https://pandas.pydata.org/docs/index.html">Pandas</a></p></li>
+</ol>
+</section>
+</body>
+</html>
